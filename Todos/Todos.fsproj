@@ -5,6 +5,9 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="assets/css/bootstrap.min.css">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="assets/css/style.css">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -19,6 +22,7 @@
     </Content>
     <Compile Include="Path.fs" />
     <Compile Include="Views/Shared/Nodes.fs" />
+    <Compile Include="Views/Shared/Attributes.fs" />
     <Compile Include="Views/Layout.fs" />
     <Compile Include="Views/Home.fs" />
     <Compile Include="App.fs" />

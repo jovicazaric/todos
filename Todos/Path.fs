@@ -3,6 +3,8 @@ module Todos.Paths
 module Assets =
     module CSS =
         let style = "/assets/css/style.css"
+        let bootstrap = "/assets/css/bootstrap.min.css"
+
 
     module JS =
         module Lib = 
