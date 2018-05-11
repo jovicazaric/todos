@@ -7,3 +7,9 @@ if errorlevel 1 (
 )
 
 packages\build\FAKE\tools\FAKE.exe build.fsx %*
+
+if errorlevel 1 (
+  exit /b %errorlevel%
+)
+
+.\Todos\bin\Debug\net461\Todos.exe
