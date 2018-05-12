@@ -26,10 +26,16 @@ let browse =
 
 let home = OK Views.Home.content
 
+let login = 
+    choose [
+        GET >=> OK (Views.Login.content None)
+        POST >=> BAD_REQUEST (Views.Login.content (Some "Invalid credentials. Please try again."))
+    ]
+    
 let resultWebPart = 
     choose [
         path Paths.Pages.home >=> home
-        path "/todo/browse" >=> browse
+        path Paths.Pages.login >=> login
         pathRegex "(.*)\.css" >=> Files.browseHome
         pathRegex "(.*)\.js" >=> Files.browseHome
     ]

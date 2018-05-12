@@ -10,13 +10,11 @@ open System
 let private composeTitle pageTitle =
     title [] (sprintf "%s | Todos" pageTitle)
 
-let private insertAdditionalHead aHead =
-    match aHead with 
+let private insertAdditionalHead = function
         | Some x -> x
         | None -> Text ""
 
-let private insertAdditionalScripts aScripts =
-    match aScripts with 
+let private insertAdditionalScripts = function
         | Some x -> x
         | None -> Text ""
 
@@ -56,9 +54,10 @@ let buildPage pageTitle mainContent additionalHead additionalScripts =
         ]
         body [] [
             navigation
-            mainContent
+            div [classAttr "container main-content"] [
+                mainContent
+            ]
             footer
-
             Nodes.scriptLink Paths.Assets.JS.Lib.jQuery
             Nodes.scriptLink Paths.Assets.JS.main
             insertAdditionalScripts additionalScripts

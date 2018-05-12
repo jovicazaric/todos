@@ -6,6 +6,7 @@ open Todos.Views.Shared
 open Todos
 
 let private mainContent = 
+
     div [("id", "header"); ("class", "header")] [
         a "/" ["target", "blank"] [
             tag "h1" [] [Text "Todos"]
