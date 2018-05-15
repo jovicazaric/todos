@@ -20,10 +20,11 @@
     <Content Include="assets/js/home.js">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Path.fs" />
+    <Compile Include="Paths.fs" />
     <Compile Include="Views/Shared/Nodes.fs" />
     <Compile Include="Views/Shared/Attributes.fs" />
     <Compile Include="Views/Layout.fs" />
+    <Compile Include="Views/Registration.fs" />
     <Compile Include="Views/Login.fs" />
     <Compile Include="Views/Home.fs" />
     <Compile Include="App.fs" />

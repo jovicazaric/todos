@@ -16,5 +16,5 @@ module Pages =
     let home = "/"
     let login = "/login"
     let logout = "/logout"
-    let register = "/register"
+    let registration = "/registration"
 

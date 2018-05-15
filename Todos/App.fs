@@ -31,11 +31,18 @@ let login =
         GET >=> OK (Views.Login.content None)
         POST >=> BAD_REQUEST (Views.Login.content (Some "Invalid credentials. Please try again."))
     ]
+
+let registration = 
+    choose [
+        GET >=> OK (Views.Registration.content Views.Registration.RegistrationForm)
+        //POST >=> BAD_REQUEST (Views.Login.content (Some "Invalid credentials. Please try again."))
+    ]
     
 let resultWebPart = 
     choose [
         path Paths.Pages.home >=> home
         path Paths.Pages.login >=> login
+        path Paths.Pages.registration >=> registration
         pathRegex "(.*)\.css" >=> Files.browseHome
         pathRegex "(.*)\.js" >=> Files.browseHome
     ]
