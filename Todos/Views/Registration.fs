@@ -1,35 +1,17 @@
 module Todos.Views.Registration
 
 open Suave.Html
-open Suave.Form
+open Todos.Forms.RegistrationForm
 open Todos.Views.Shared.Attributes
 open Todos.Views.Shared
 open Todos.Views.Layout
 open Todos
 
-let formInput = Suave.Form.input
-let suaveInput = Suave.Html.input
+let private insertErrorMessage = function
+    | Some x -> Nodes.errorSpan x
+    | _ -> Text ""
 
-type Registration = {
-    FirstName : string
-    LastName : string
-    Email : string
-    Password : Password
-    ConfirmPassword : Password
-}
-
-let checkPasswords  =
-    (fun x -> x.Password = x.ConfirmPassword), "Confirm password must match password"
-
-let RegistrationForm : Form<Registration> =
-    Form ([ TextProp ((fun x -> <@ x.FirstName @>), [maxLength 50])
-            TextProp ((fun x -> <@ x.LastName @>), [maxLength 50;])
-            TextProp ((fun x -> <@ x.Email @>), [])
-            PasswordProp ((fun x -> <@ x.Password @>), [])
-            PasswordProp ((fun x -> <@ x.ConfirmPassword @>), [])
-    ], [])
-
-let private mainContent (form : Form<Registration>) = 
+let private mainContent error = 
     div [] [
         div [classAttr "row"] [
             div [classAttr "offset-md-4 col-md-4"] [
@@ -42,38 +24,38 @@ let private mainContent (form : Form<Registration>) =
                 tag "form" [methodAttr "post"] [
                     div [classAttr "form-group"] [
                         Nodes.label "First name *"
-                        formInput (fun x -> <@ x.FirstName @>) [classAttr "form-control"] form
+                        Suave.Form.input (fun x -> <@ x.FirstName @>) [classAttr "form-control"] Form
                     ]
                     div [classAttr "form-group"] [
                         Nodes.label "Last name *"
-                        formInput (fun x -> <@ x.LastName @>) [classAttr "form-control"] form
+                        Suave.Form.input (fun x -> <@ x.LastName @>) [classAttr "form-control"] Form
                     ]
                     div [classAttr "form-group"] [
                         Nodes.label "Email *"
-                        formInput (fun x -> <@ x.Email @>) [classAttr "form-control";] form
+                        Suave.Form.input (fun x -> <@ x.Email @>) [classAttr "form-control"] Form
                     ]
                     div [classAttr "form-group"] [
                         Nodes.label "Password *"
-                        formInput (fun x -> <@ x.Password @>) [classAttr "form-control"] form
+                        Suave.Form.input (fun x -> <@ x.Password @>) [classAttr "form-control"] Form
                     ]
                     div [classAttr "form-group"] [
                         Nodes.label "Confirm password *"
-                        formInput (fun x -> <@ x.ConfirmPassword @>) [classAttr "form-control"] form
+                        Suave.Form.input (fun x -> <@ x.ConfirmPassword @>) [classAttr "form-control"] Form
                     ]
+                    insertErrorMessage error
                     div [classAttr "form-group"] [
-                        suaveInput [classAttr "form-control btn btn-success"; typeAttr "submit"; valueAttr "Register"]
+                        Suave.Html.input [classAttr "form-control btn btn-success"; typeAttr "submit"; valueAttr "Register"]
                     ]
                 ]
                 p [] [
-                    Text "If you have already registered, please log in."
-                    br []
+                    Text "If you have already registered, please "
                     a Paths.Pages.login [] [
-                        Text "Go to login page"
+                        Text "log in"
                     ]
                 ]
             ]
         ]  
     ]
     
-let content form =
-   buildPage "Registration" (mainContent form) None None
+let content error =
+   buildPage "Registration" (mainContent error) None None

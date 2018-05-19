@@ -5,23 +5,25 @@ open Suave.Filters
 open Suave.Operators 
 open Suave.RequestErrors
 open Suave.Successful
+open Suave.Form
+open Suave.Model.Binding
+open Todos.Views
+open Todos.Forms
 
 
-// let todoWebPart userId todoId = OK  (sprintf "Todo with id %d created by user %d" todoId userId)
+let bindToError content error =
+    BAD_REQUEST (content error)
 
-// let resultWebPart = 
-//     choose [
-//         path "/" >=> (OK "Home")
-//         pathScan "/user/%d/todo/%d" (fun (uId, tId) -> todoWebPart uId tId)
-//         NOT_FOUND "404 Not found"
-//     ]
+let bindToForm1 form handler error =
+    bindReq (bindForm form) handler BAD_REQUEST
 
 
-let browse =
+
+let bindToForm form success error =
     request (fun req ->
-        match req.queryParam "id" with
-            | Choice1Of2 genre -> OK (sprintf "Todo with id %s" genre)
-            | Choice2Of2 msg -> BAD_REQUEST msg
+        match bindForm form req with
+            | Choice1Of2 f -> success f
+            | Choice2Of2 msg -> error (Some msg)
     )
 
 let home = OK Views.Home.content
@@ -34,8 +36,9 @@ let login =
 
 let registration = 
     choose [
-        GET >=> OK (Views.Registration.content Views.Registration.RegistrationForm)
-        //POST >=> BAD_REQUEST (Views.Login.content (Some "Invalid credentials. Please try again."))
+        GET >=> OK (Views.Registration.content None)
+        POST >=> bindToForm RegistrationForm.Form (fun form -> OK (Views.Registration.content None)) (fun error -> BAD_REQUEST (Views.Registration.content error))
+        //POST >=> bindToForm Registration.RegistrationForm (fun form -> home) (bindToError (Views.Registration.content Views.Registration.RegistrationForm))
     ]
     
 let resultWebPart = 
