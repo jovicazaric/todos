@@ -17,3 +17,5 @@ let h2 text = tag "h2" [] [Text text]
 let textP text = p [] [Text text]
 
 let errorSpan text = span [classAttr "error"] [Text text] 
+
+let form attributes content = tag "form" attributes content

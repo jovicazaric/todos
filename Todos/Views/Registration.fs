@@ -21,7 +21,7 @@ let private mainContent error =
         ]
         div [classAttr "row"] [
             div [classAttr "offset-md-4 col-md-4"] [
-                tag "form" [methodAttr "post"] [
+                Nodes.form [methodAttr "post"] [
                     div [classAttr "form-group"] [
                         Nodes.label "First name *"
                         Suave.Form.input (fun x -> <@ x.FirstName @>) [classAttr "form-control"] Form

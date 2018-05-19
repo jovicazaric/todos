@@ -1,33 +1,43 @@
 module Todos.Views.Login
 
 open Suave.Html
+open Todos.Forms.LoginForm
 open Todos.Views
-open Todos.Views.Shared.Attributes
+open Todos.Views.Shared
+open Todos
 
 let private insertErrorMessage = function
-    | Some x -> span [classAttr "error"] [Text x] 
+    | Some x -> span [Attributes.classAttr "error"] [Text x] 
     | _ -> Text ""
 
 let private mainContent errorMessage = 
     div [] [
-        div [classAttr "row"] [
-            div [classAttr "offset-md-4 col-md-4"] [
-                tag "h2" [] [Text "Log in"]
-                p [] [Text "Please enter your credentials to start using application"]
+        div [Attributes.classAttr "row"] [
+            div [Attributes.classAttr "offset-md-4 col-md-4"] [
+                Nodes.h2 "Log in"
+                Nodes.textP "Please enter your credentials to start using application"
             ]
         ]
-        div [classAttr "row"] [
-            div [classAttr "offset-md-4 col-md-4"] [
-                tag "form" [methodAttr "post"] [
-                    div [classAttr "form-group"] [
-                        input [classAttr "form-control"; typeAttr "text"; nameAttr "email"; placeholderAttr "Email"]
+        div [Attributes.classAttr "row"] [
+            div [Attributes.classAttr "offset-md-4 col-md-4"] [
+                Nodes.form [Attributes.methodAttr "post"] [
+                    div [Attributes.classAttr "form-group"] [
+                        Nodes.label "Email *"
+                        Suave.Form.input (fun x -> <@ x.Email @>) [Attributes.classAttr "form-control"] Form
                     ]
-                    div [classAttr "form-group"] [
-                        input [classAttr "form-control"; typeAttr "password"; nameAttr "password"; placeholderAttr "Password"]
+                    div [Attributes.classAttr "form-group"] [
+                        Nodes.label "Password *"
+                        Suave.Form.input (fun x -> <@ x.Password @>) [Attributes.classAttr "form-control"] Form
                     ]
                     insertErrorMessage errorMessage
-                    div [classAttr "form-group"] [
-                        input [classAttr "form-control btn btn-success"; typeAttr "submit"; valueAttr "Log in"]
+                    div [Attributes.classAttr "form-group"] [
+                        Suave.Html.input [Attributes.classAttr "form-control btn btn-success"; Attributes.typeAttr "submit"; Attributes.valueAttr "Log in"]
+                    ]
+                ]
+                p [] [
+                    Text "If you do not have account, please "
+                    a Paths.Pages.registration [] [
+                        Text "register"
                     ]
                 ]
             ]

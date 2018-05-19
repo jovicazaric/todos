@@ -10,15 +10,6 @@ open Suave.Model.Binding
 open Todos.Views
 open Todos.Forms
 
-
-let bindToError content error =
-    BAD_REQUEST (content error)
-
-let bindToForm1 form handler error =
-    bindReq (bindForm form) handler BAD_REQUEST
-
-
-
 let bindToForm form success error =
     request (fun req ->
         match bindForm form req with
@@ -31,14 +22,13 @@ let home = OK Views.Home.content
 let login = 
     choose [
         GET >=> OK (Views.Login.content None)
-        POST >=> BAD_REQUEST (Views.Login.content (Some "Invalid credentials. Please try again."))
+        POST >=> bindToForm LoginForm.Form (fun _ -> OK (Views.Home.content)) (Views.Login.content >> BAD_REQUEST)
     ]
 
 let registration = 
     choose [
         GET >=> OK (Views.Registration.content None)
-        POST >=> bindToForm RegistrationForm.Form (fun form -> OK (Views.Registration.content None)) (fun error -> BAD_REQUEST (Views.Registration.content error))
-        //POST >=> bindToForm Registration.RegistrationForm (fun form -> home) (bindToError (Views.Registration.content Views.Registration.RegistrationForm))
+        POST >=> bindToForm RegistrationForm.Form (fun _form -> OK (Views.Registration.content None)) (Views.Registration.content >> BAD_REQUEST)
     ]
     
 let resultWebPart = 
