@@ -48,7 +48,7 @@ let private mainContent error =
                 ]
                 p [] [
                     Text "If you have already registered, please "
-                    a Paths.Pages.login [] [
+                    a Paths.Pages.Login [] [
                         Text "log in"
                     ]
                 ]

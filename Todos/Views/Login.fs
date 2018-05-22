@@ -36,7 +36,7 @@ let private mainContent errorMessage =
                 ]
                 p [] [
                     Text "If you do not have account, please "
-                    a Paths.Pages.registration [] [
+                    a Paths.Pages.Registration [] [
                         Text "register"
                     ]
                 ]

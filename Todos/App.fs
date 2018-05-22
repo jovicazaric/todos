@@ -38,11 +38,11 @@ let validateUser email password =
         None
 
 let home =
-    Authentication.sessionBasedActions (buildPage OK Views.Home.content) (Redirection.FOUND Paths.Pages.login)
+    Authentication.sessionBasedActions (buildPage OK Views.Home.content) (Redirection.FOUND Paths.Pages.Login)
 
 let login = 
     choose [
-        GET >=> Authentication.sessionBasedActions (Redirection.FOUND Paths.Pages.home) (buildPage OK (Views.Login.content None))
+        GET >=> Authentication.sessionBasedActions (Redirection.FOUND Paths.Pages.Home) (buildPage OK (Views.Login.content None))
         POST >=> bindToForm LoginForm.Form 
             (fun form -> 
                 let (Password password) = form.Password
@@ -59,7 +59,7 @@ let login =
 let logout =
     unsetPair SessionAuthCookie >=>
     unsetPair StateCookie >=>
-    Redirection.FOUND Paths.Pages.login
+    Redirection.FOUND Paths.Pages.Login
 
 let registration = 
     choose [
@@ -69,10 +69,10 @@ let registration =
     
 let resultWebPart = 
     choose [
-        path Paths.Pages.home >=> home
-        path Paths.Pages.login >=> login
-        path Paths.Pages.logout >=> logout
-        path Paths.Pages.registration >=> registration
+        path Paths.Pages.Home >=> home
+        path Paths.Pages.Login >=> login
+        path Paths.Pages.Logout >=> logout
+        path Paths.Pages.Registration >=> registration
         pathRegex "(.*)\.css" >=> Files.browseHome
         pathRegex "(.*)\.js" >=> Files.browseHome
     ]

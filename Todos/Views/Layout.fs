@@ -25,7 +25,7 @@ let navigationActions user  =
                         a "#" [Attributes.classAttr "nav-link"] [Text "Account"]
                     ]
                     tag "li" [Attributes.classAttr "nav-item"] [
-                        a Paths.Pages.logout [Attributes.classAttr "nav-link"] [Text "Logout"]
+                        a Paths.Pages.Logout [Attributes.classAttr "nav-link"] [Text "Logout"]
                     ]
                 ]
             ]
@@ -46,8 +46,8 @@ let buildPage pageData user =
             meta [Attributes.nameAttr "viewport"; Attributes.contentAttr "width=device-width, initial-scale=1, shrink-to-fit=no"]
             composeTitle pageData.Title
 
-            Nodes.cssLink Paths.Assets.CSS.bootstrap
-            Nodes.cssLink Paths.Assets.CSS.style
+            Nodes.cssLink Paths.Assets.CSS.Bootstrap
+            Nodes.cssLink Paths.Assets.CSS.Style
         ]
         body [] [
             navigation user
@@ -61,8 +61,8 @@ let buildPage pageData user =
                 ]
             ]
 
-            Nodes.scriptLink Paths.Assets.JS.Lib.jQuery
-            Nodes.scriptLink Paths.Assets.JS.main
+            Nodes.scriptLink Paths.Assets.JS.Lib.JQuery
+            Nodes.scriptLink Paths.Assets.JS.Main
         ]
     ]
     |> htmlToString
