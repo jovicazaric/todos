@@ -13,3 +13,7 @@ let nameAttr (value : string) = ("name", value)
 let valueAttr (value : string) = ("value", value)
 
 let methodAttr (value : string) = ("method", value)
+
+let charsetAttr (value : string) = ("charset", value)
+
+let contentAttr (value : string) = ("content", value)

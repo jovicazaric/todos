@@ -1,5 +1,5 @@
 module Todos.Paths
-
+// create as constants
 module Assets =
     module CSS =
         let style = "/assets/css/style.css"

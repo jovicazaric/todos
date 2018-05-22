@@ -1,9 +1,7 @@
 module Todos.Views.Home
 
 open Suave.Html
-open Todos.Views
-open Todos.Views.Shared
-open Todos
+open Todos.Views.Layout
 
 let private mainContent = 
 
@@ -13,8 +11,5 @@ let private mainContent =
         ]
     ]
 
-let private scripts = 
-    Some (Nodes.scriptLink Paths.Assets.JS.home)
-
-let content = 
-    Layout.buildPage "Home" mainContent None scripts
+let content =
+    { Title = "Home"; Content = mainContent }

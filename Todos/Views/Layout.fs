@@ -2,65 +2,67 @@ module Todos.Views.Layout
 
 open Suave.Html
 open Todos.Views.Shared
-open Todos.Views.Shared.Attributes
 open Todos
-open System
+open Todos.Authentication
 
+type PageData = {
+    Title : string
+    Content : Node
+}
 
 let private composeTitle pageTitle =
     title [] (sprintf "%s | Todos" pageTitle)
 
-let private insertAdditionalHead = function
-        | Some x -> x
-        | None -> Text ""
-
-let private insertAdditionalScripts = function
-        | Some x -> x
-        | None -> Text ""
-
-let private navigation = 
-    tag "nav" [classAttr "navbar navbar-expand-lg navbar-dark bg-dark fixed-top"] [
-        div [classAttr "container"] [
-            a "/" [classAttr "navbar-brand"] [Text "Todos"]
-            div [classAttr "collapse navbar-collapse"] [
-                tag "ul" [classAttr "navbar-nav ml-auto"] [
-                    tag "li" [classAttr "nav-item"] [
-                        a "#" [classAttr "nav-link"] [Text "Logout"]
+let navigationActions user  = 
+    match user with
+        | Some user ->
+            div [Attributes.classAttr "collapse navbar-collapse"] [
+                tag "ul" [Attributes.classAttr "navbar-nav ml-auto"] [
+                    tag "li" [Attributes.classAttr "navbar-text"] [
+                        Text (sprintf "Hi, %s" user.Email)
                     ]
-                    tag "li" [classAttr "nav-item"] [
-                        a "#" [classAttr "nav-link"; titleAttr "Account settings"] [Text "Hi j.zaric"]
+                    tag "li" [Attributes.classAttr "nav-item"] [
+                        a "#" [Attributes.classAttr "nav-link"] [Text "Account"]
+                    ]
+                    tag "li" [Attributes.classAttr "nav-item"] [
+                        a Paths.Pages.logout [Attributes.classAttr "nav-link"] [Text "Logout"]
                     ]
                 ]
             ]
+        | None -> Text ""                   
+
+let private navigation user = 
+    tag "nav" [Attributes.classAttr "navbar navbar-expand-lg navbar-dark bg-dark fixed-top"] [
+        div [Attributes.classAttr "container"] [
+            a "/" [Attributes.classAttr "navbar-brand"] [Text "Todos"]
+            navigationActions user
         ]
     ]
 
-let private footer = 
-    tag "footer" [classAttr "py-3 bg-dark"] [
-        div [classAttr "container"] [
-            p [classAttr "m-0 text-right text-white"] [Text "Copyright © Todos WebApp By Jovica Zaric 2018"]
-        ]
-    ]
-let buildPage pageTitle mainContent additionalHead additionalScripts =
+let buildPage pageData user =
     html [] [
         head [] [
-            meta ["charset", "utf-8"]
-            meta ["name", "viewport"; "content", "width=device-width, initial-scale=1, shrink-to-fit=no"]
-            composeTitle pageTitle
-            insertAdditionalHead additionalHead
+            meta [Attributes.charsetAttr "utf-8"]
+            meta [Attributes.nameAttr "viewport"; Attributes.contentAttr "width=device-width, initial-scale=1, shrink-to-fit=no"]
+            composeTitle pageData.Title
 
             Nodes.cssLink Paths.Assets.CSS.bootstrap
             Nodes.cssLink Paths.Assets.CSS.style
         ]
         body [] [
-            navigation
-            div [classAttr "container main-content"] [
-                mainContent
+            navigation user
+            div [Attributes.classAttr "container main-content"] [
+                pageData.Content
             ]
-            footer
+            
+            tag "footer" [Attributes.classAttr "py-3 bg-dark"] [
+                div [Attributes.classAttr "container"] [
+                    p [Attributes.classAttr "m-0 text-right text-white"] [Text "Copyright © Todos WebApp By Jovica Zaric 2018"]
+                ]
+            ]
+
             Nodes.scriptLink Paths.Assets.JS.Lib.jQuery
             Nodes.scriptLink Paths.Assets.JS.main
-            insertAdditionalScripts additionalScripts
         ]
     ]
     |> htmlToString

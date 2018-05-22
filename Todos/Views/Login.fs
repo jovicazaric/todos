@@ -2,7 +2,7 @@ module Todos.Views.Login
 
 open Suave.Html
 open Todos.Forms.LoginForm
-open Todos.Views
+open Todos.Views.Layout
 open Todos.Views.Shared
 open Todos
 
@@ -45,4 +45,4 @@ let private mainContent errorMessage =
     ]
     
 let content errorMessage = 
-    Layout.buildPage "Login" (mainContent errorMessage) None None
+    { Title = "Login"; Content = mainContent errorMessage }

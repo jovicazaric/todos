@@ -22,6 +22,7 @@
     </Content>
     <Compile Include="Paths.fs" />
     <Compile Include="Database.fs" />
+    <Compile Include="Authentication.fs" />
     <Compile Include="Views/Shared/Attributes.fs" />
     <Compile Include="Views/Shared/Nodes.fs" />
     <Compile Include="Forms/RegistrationForm.fs" />
