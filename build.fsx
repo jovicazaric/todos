@@ -2,7 +2,7 @@
 // FAKE build script
 // --------------------------------------------------------------------------------------
 
-#r "./packages/build/FAKE/tools/FakeLib.dll"
+#r "./packages/FAKE/tools/FakeLib.dll"
 
 open Fake
 open System

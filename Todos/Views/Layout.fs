@@ -34,7 +34,7 @@ let navigationActions user  =
 let private navigation user = 
     tag "nav" [Attributes.classAttr "navbar navbar-expand-lg navbar-dark bg-dark fixed-top"] [
         div [Attributes.classAttr "container"] [
-            a "/" [Attributes.classAttr "navbar-brand"] [Text "Todos"]
+            a "/" [Attributes.classAttr "navbar-brand"] [Text "Home"]
             navigationActions user
         ]
     ]

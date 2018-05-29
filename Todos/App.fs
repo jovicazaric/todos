@@ -38,7 +38,7 @@ let validateUser email password =
         None
 
 let home =
-    Authentication.sessionBasedActions (buildPage OK Views.Home.content) (Redirection.FOUND Paths.Pages.Login)
+    Authentication.sessionBasedActions (buildPage OK (Views.Home.content Database.Todos)) (Redirection.FOUND Paths.Pages.Login)
 
 let login = 
     choose [

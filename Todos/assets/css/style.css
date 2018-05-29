@@ -24,9 +24,50 @@ span.error {
 }
 
 .navbar-brand {
-  font-size: 2.0rem;
+  font-size: 25px;
 }
 
 .navbar-dark .navbar-text {
   margin-right: 10px;
+}
+
+.flex-row {
+  display:  flex;
+  flex-wrap:  wrap;
+}
+
+.todo-item {
+  padding: 20px;
+  margin: 5px;
+}
+
+.todo-item-completed {
+  background: #98ff82;
+}
+
+.todo-item-upcomming {
+  background: #b2fff9;
+}
+
+.todo-item-incompleted {
+  background: #e26e61;
+}
+
+.todo-item .time {
+  margin-bottom: 45px;
+}
+
+.todo-item .btn-success {
+  position: absolute;
+  right: 35px;
+  bottom: 0;
+  margin-bottom: 15px;
+  width: 75%;
+}
+
+.legend-item {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  margin-left: 10px;
 }
