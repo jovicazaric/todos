@@ -7,13 +7,14 @@ type Login = {
     Password : Password
 }
 
-let requiredFieldsErrorMessage = "Both email and password inputs are required"
+[<Literal>]
+let RequiredFieldsErrorMessage = "Both email and password inputs are required"
 
 let emailNotEmpty =
-    (fun x -> x.Email <> ""), requiredFieldsErrorMessage
+    (fun x -> x.Email <> ""), RequiredFieldsErrorMessage
 
 let passwordNotEmpty =
-    (fun x -> x.Password <>  Password("")), requiredFieldsErrorMessage
+    (fun x -> x.Password <>  Password("")), RequiredFieldsErrorMessage
 
 let Form : Form<Login> =
     Form ([ TextProp ((fun x -> <@ x.Email @>), [])

@@ -1,27 +1,37 @@
 module Todos.Views.Home
 
 open Suave.Html
+open System
 open Todos.Views.Layout
 open Todos.Views.Shared
 open Todos
 
-let private renderCompleteForm (todo : Database.Todo) =
+let getTodoItemCssClass (todo : Database.Todo) =
+    if todo.IsCompleted then
+        "completed"
+    else if todo.HappeningAt < DateTime.Now then
+        "incompleted"
+    else 
+        "upcomming"
+
+let private renderControls (todo : Database.Todo) =
     match todo.IsCompleted with
     | true -> Text ""
-    | false -> 
-        Nodes.form [Attributes.methodAttr "post"] [
-            div [Attributes.classAttr "form-group"] [
-                Suave.Html.input [Attributes.classAttr "form-control btn btn-success"; Attributes.typeAttr "submit"; Attributes.valueAttr "Mark as completed"]
+    | false ->
+        div [Attributes.classAttr "row todo-controls"] [
+            Nodes.form [Attributes.methodAttr "post"; Attributes.actionAttr Paths.Actions.CompleteTodo] [
+                Suave.Html.input [Attributes.typeAttr "hidden"; Attributes.valueAttr todo.Id; Attributes.nameAttr "Id"]
+                Suave.Html.input [Attributes.classAttr "form-control btn btn-success btn-todo-complete"; Attributes.typeAttr "submit"; Attributes.valueAttr "Complete"]
             ]
+            a (QueryString.addToUrl Paths.Pages.Todo "id" todo.Id) [Attributes.classAttr "btn btn-primary btn-todo-edit"] [Text "Edit"]   
         ]
-
+ 
 let private renderTodoItem (todo : Database.Todo) =
-    let cssClass = Database.getTodoItemCssClass todo
-    div [Attributes.classAttr ("col-md-3 todo-item todo-item-" + cssClass)] [
+    div [Attributes.classAttr ("col-md-3 todo-item todo-item-" + (getTodoItemCssClass todo))] [
         Nodes.h4 todo.Title
         p [] [Text todo.Description]
         p [Attributes.classAttr "time"] [Text (sprintf "Time: %s" (todo.HappeningAt.ToString "dd. MMMM yyyy. HH:mm" ))]
-        renderCompleteForm todo
+        renderControls todo
     ]
 
 let private renderTodoItems (todos : Database.Todo list) =  
@@ -31,6 +41,9 @@ let private mainContent todos =
     div[] [
         div [Attributes.classAttr "row"] [
             div [Attributes.classAttr "col-md-3"] [
+                a Paths.Pages.Todo [Attributes.classAttr "btn btn-success"] [
+                    Text "+ New todo"
+                ]
                 // Nodes.ul [] [
                 //     Nodes.li [] [
                 //         a Paths.Pages.Registration [] [

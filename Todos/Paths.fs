@@ -27,8 +27,16 @@ module Pages =
     let Login = "/login"
 
     [<Literal>]
-    let Logout = "/logout"
-    
-    [<Literal>]
     let Registration = "/registration"
+
+    [<Literal>]
+    let Todo = "/todo"
+
+module Actions = 
+
+    [<Literal>]
+    let Logout = "/logout"
+
+    [<Literal>]
+    let CompleteTodo = "/complete-todo"
 

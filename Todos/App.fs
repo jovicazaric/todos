@@ -38,8 +38,10 @@ let validateUser email password =
         None
 
 let home =
-    Authentication.sessionBasedActions (buildPage OK (Views.Home.content Database.Todos)) (Redirection.FOUND Paths.Pages.Login)
-
+    choose [
+        GET >=> Authentication.sessionBasedActions (buildPage OK (Views.Home.content (List.ofSeq Database.todoItems))) (Redirection.FOUND Paths.Pages.Login)
+    ]
+    
 let login = 
     choose [
         GET >=> Authentication.sessionBasedActions (Redirection.FOUND Paths.Pages.Home) (buildPage OK (Views.Login.content None))
@@ -66,13 +68,47 @@ let registration =
         GET >=> buildPage OK (Views.Registration.content None)
         POST >=> bindToForm RegistrationForm.Form (fun _form ->  buildPage OK (Views.Registration.content None)) (Views.Registration.content >> buildPage BAD_REQUEST)
     ]
-    
+
+let todo = 
+    choose [
+        GET >=> Authentication.sessionBasedActions 
+            (request (fun req ->
+                match req.queryParam "id" with 
+                    | Choice1Of2 id -> 
+                        match Database.TryFindTodo id with 
+                            | Some t -> buildPage OK (Views.Todo.content (Some (t))  None)
+                            | None -> NOT_FOUND (sprintf "Todo with id %s not found" id)  
+                    | Choice2Of2 _ -> buildPage OK (Views.Todo.content None None) 
+            )) 
+            (Redirection.FOUND Paths.Pages.Login)
+    ]
+
+let completeTodo =
+    choose [
+        POST >=> bindToForm CompleteTodoForm.Form (fun form -> 
+                let id = form.Id
+                let todo = Database.TryFindTodo id
+
+                match todo with 
+                    | Some x -> 
+                        if (x.IsCompleted) then
+                            BAD_REQUEST (sprintf "Todo with id %s has been already completed." x.Id)
+                        else
+                            Database.MarkAsCompleted x.Id
+                            Redirection.FOUND Paths.Pages.Home
+                    | None -> BAD_REQUEST (sprintf "Todo with id %s not found." id)
+            )
+            (fun error -> BAD_REQUEST error.Value)
+    ]
+
 let resultWebPart = 
     choose [
         path Paths.Pages.Home >=> home
         path Paths.Pages.Login >=> login
-        path Paths.Pages.Logout >=> logout
+        path Paths.Actions.Logout >=> logout
         path Paths.Pages.Registration >=> registration
+        path Paths.Pages.Todo >=> todo
+        path Paths.Actions.CompleteTodo >=> completeTodo
         pathRegex "(.*)\.css" >=> Files.browseHome
         pathRegex "(.*)\.js" >=> Files.browseHome
     ]

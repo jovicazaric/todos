@@ -57,12 +57,24 @@ span.error {
   margin-bottom: 45px;
 }
 
-.todo-item .btn-success {
+.todo-item .btn-todo-complete {
   position: absolute;
-  right: 35px;
+  right: 80px;
+  bottom: 45px;
+  margin-bottom: 15px;
+  width: 50%;
+}
+
+.todo-item .btn-todo-edit {
+  position: absolute;
+  right: 80px;
   bottom: 0;
   margin-bottom: 15px;
-  width: 75%;
+  width: 50%;
+}
+
+.row.todo-controls {
+  margin-top: 100px;
 }
 
 .legend-item {

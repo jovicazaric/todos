@@ -25,7 +25,7 @@ let navigationActions user  =
                         a "#" [Attributes.classAttr "nav-link"] [Text "Account"]
                     ]
                     tag "li" [Attributes.classAttr "nav-item"] [
-                        a Paths.Pages.Logout [Attributes.classAttr "nav-link"] [Text "Logout"]
+                        a Paths.Actions.Logout [Attributes.classAttr "nav-link"] [Text "Logout"]
                     ]
                 ]
             ]
