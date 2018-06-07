@@ -19,3 +19,5 @@ let actionAttr (value : string) = ("action", value)
 let charsetAttr (value : string) = ("charset", value)
 
 let contentAttr (value : string) = ("content", value)
+
+let rowsAttr (value : int) = ("rows", value.ToString())

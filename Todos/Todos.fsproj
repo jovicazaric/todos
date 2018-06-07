@@ -28,6 +28,7 @@
     <Compile Include="Views/Shared/QueryString.fs" />
     <Compile Include="Forms/RegistrationForm.fs" />
     <Compile Include="Forms/LoginForm.fs" />
+    <Compile Include="Forms/TodoForm.fs" />
     <Compile Include="Forms/CompleteTodoForm.fs" />
     <Compile Include="Views/Layout.fs" />
     <Compile Include="Views/Registration.fs" />

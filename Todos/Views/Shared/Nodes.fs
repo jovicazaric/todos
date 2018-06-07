@@ -1,6 +1,5 @@
 module Todos.Views.Shared.Nodes
 
-
 open Todos.Views.Shared.Attributes
 open Suave.Html
 
@@ -19,6 +18,8 @@ let h3 text = tag "h3" [] [Text text]
 let h4 text = tag "h4" [] [Text text]
 
 let textP text = p [] [Text text]
+
+let textArea attributes text = tag "textarea" attributes [Text text]
 
 let ul attributes nodes = tag "ul" attributes nodes
 
