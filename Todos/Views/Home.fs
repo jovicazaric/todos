@@ -73,16 +73,16 @@ let private mainContent todos =
                 Text "Legend: "
                 Nodes.ul [] [
                     Nodes.li [] [
-                        Text "Upcomming"
                         div [Attributes.classAttr "legend-item todo-item-upcomming"] []
+                        Text "Upcomming"
                     ]
                     Nodes.li [] [
-                        Text "Completed"
                         div [Attributes.classAttr "legend-item todo-item-completed"] []
+                        Text "Completed"
                     ]
                     Nodes.li [] [
-                        Text "Incompleted"
                         div [Attributes.classAttr "legend-item todo-item-incompleted"] []
+                        Text "Incompleted"
                     ]
                 ]
             ]
