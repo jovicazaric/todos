@@ -32,6 +32,9 @@ module Pages =
     [<Literal>]
     let Todo = "/todo"
 
+    [<Literal>]
+    let Account = "/account"
+
 module Actions = 
 
     [<Literal>]

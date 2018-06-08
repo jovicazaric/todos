@@ -88,3 +88,10 @@ ul.legend-list {
   list-style-type: none;
   padding-left: 15px;
 }
+
+div.account-setting-section {
+  margin-top: 25px;
+  border: solid #90EE90;
+  border-width: 1px;
+  padding-top: 15px;
+}

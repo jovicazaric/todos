@@ -17,14 +17,14 @@ let navigationActions user  =
     match user with
         | Some user ->
             div [Attributes.classAttr "collapse navbar-collapse"] [
-                tag "ul" [Attributes.classAttr "navbar-nav ml-auto"] [
-                    tag "li" [Attributes.classAttr "navbar-text"] [
+                Nodes.ul [Attributes.classAttr "navbar-nav ml-auto"] [
+                    Nodes.li [Attributes.classAttr "navbar-text"] [
                         Text (sprintf "Hi, %s" user.FullName)
                     ]
-                    tag "li" [Attributes.classAttr "nav-item"] [
-                        a "#" [Attributes.classAttr "nav-link"] [Text "Account"]
+                    Nodes.li [Attributes.classAttr "nav-item"] [
+                        a Paths.Pages.Account [Attributes.classAttr "nav-link"] [Text "Account"]
                     ]
-                    tag "li" [Attributes.classAttr "nav-item"] [
+                    Nodes.li [Attributes.classAttr "nav-item"] [
                         a Paths.Actions.Logout [Attributes.classAttr "nav-link"] [Text "Logout"]
                     ]
                 ]

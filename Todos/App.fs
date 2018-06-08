@@ -152,14 +152,20 @@ let completeTodo =
             (fun error -> BAD_REQUEST error.Value)
     ]
 
+let account =
+    choose [
+        GET >=> Authentication.sessionBasedActions (buildPage OK (Views.Account.content None None)) (Redirection.FOUND Paths.Pages.Login)
+    ]
+
 let resultWebPart = 
     choose [
         path Paths.Pages.Home >=> home
         path Paths.Pages.Login >=> login
-        path Paths.Actions.Logout >=> logout
         path Paths.Pages.Registration >=> registration
         path Paths.Pages.Todo >=> todo
+        path Paths.Pages.Account >=> account
         path Paths.Actions.CompleteTodo >=> completeTodo
+        path Paths.Actions.Logout >=> logout
         pathRegex "(.*)\.css" >=> Files.browseHome
         pathRegex "(.*)\.js" >=> Files.browseHome
     ]
