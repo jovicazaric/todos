@@ -7,7 +7,6 @@ open Todos.Views.Shared
 open Todos.Database
 open Todos
 
-
 let private insertErrorMessage = function
     | Some x -> span [Attributes.classAttr "error"] [Text x] 
     | _ -> Text ""
@@ -41,7 +40,7 @@ let private renderDescription todo =
 
     Nodes.textArea [Attributes.classAttr "form-control"; Attributes.nameAttr "TMDescription"; Attributes.rowsAttr 5] text
 
-let private renderHiddenId todo =
+let private renderHiddenId (todo : Todo option) =
     let id = 
         match todo with 
             | Some x -> x.Id
@@ -93,4 +92,4 @@ let private mainContent todo errorMessage =
     ]
     
 let content todo errorMessage = 
-    { Title = (title todo); Content = mainContent todo errorMessage }
+    { Title = (title todo); Content = mainContent (todo : Todo option) errorMessage }

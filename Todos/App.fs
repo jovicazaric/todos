@@ -31,12 +31,6 @@ let buildPage responseType pageData =
 let returnPath = 
     Redirection.FOUND "/"
 
-let validateUser email password =
-    if (email = "jovica@zaric.com" && password = "111") then
-        Some email
-    else
-        None
-
 let handleErrorOnTodoPost error = 
     (request (fun req ->
         match req.formData "TMId" with
@@ -56,17 +50,21 @@ let home =
 let login = 
     choose [
         GET >=> Authentication.sessionBasedActions (Redirection.FOUND Paths.Pages.Home) (buildPage OK (Views.Login.content None))
-        POST >=> bindToForm LoginForm.Form 
-            (fun form -> 
-                let (Password password) = form.Password
-                match (validateUser form.Email password) with
-                    | Some x ->  
-                        authenticated Cookie.CookieLife.Session false >=> 
-                        Authentication.session (fun _ -> succeed) >=>
-                        Authentication.sessionStore (fun store -> store.set "email" x ) >=>
-                        returnPath 
-                    | None ->  (buildPage BAD_REQUEST (Views.Login.content (Some "Invalid email or password"))))
-            (Views.Login.content >> buildPage BAD_REQUEST)
+        POST >=> Authentication.sessionBasedActions 
+                (Redirection.FOUND Paths.Pages.Home)
+                (bindToForm LoginForm.Form 
+                    (fun form -> 
+                        let (Password password) = form.Password
+                        let user = Database.TryFindUserByEmailPassword form.Email password
+                        match user with
+                            | Some x ->  
+                                authenticated Cookie.CookieLife.Session false >=> 
+                                Authentication.session (fun _ -> succeed) >=>
+                                Authentication.sessionStore (fun store -> store.set "userId" x.Id) >=>
+                                Authentication.sessionStore (fun store -> store.set "userFullName" (sprintf "%s %s" x.FirstName x.LastName)) >=>
+                                returnPath 
+                            | None ->  (buildPage BAD_REQUEST (Views.Login.content (Some "Invalid email or password"))))
+                    (Views.Login.content >> buildPage BAD_REQUEST))
     ]
 
 let logout =
@@ -76,8 +74,12 @@ let logout =
 
 let registration = 
     choose [
-        GET >=> buildPage OK (Views.Registration.content None)
-        POST >=> bindToForm RegistrationForm.Form (fun _form ->  buildPage OK (Views.Registration.content None)) (Views.Registration.content >> buildPage BAD_REQUEST)
+        GET >=> Authentication.sessionBasedActions (Redirection.FOUND Paths.Pages.Home) (buildPage OK (Views.Registration.content None))
+        POST >=> Authentication.sessionBasedActions 
+            (Redirection.FOUND Paths.Pages.Home)
+            (bindToForm RegistrationForm.Form 
+                (fun _form ->  buildPage OK (Views.Registration.content None)) 
+                (Views.Registration.content >> buildPage BAD_REQUEST))
     ]
 
 let todo = 
@@ -128,7 +130,7 @@ let completeTodo =
                         if (x.IsCompleted) then
                             BAD_REQUEST (sprintf "Todo with id %s has been already completed." x.Id)
                         else
-                            Database.MarkAsCompleted x.Id
+                            Database.CompleteTodo x.Id
                             Redirection.FOUND Paths.Pages.Home
                     | None -> BAD_REQUEST (sprintf "Todo with id %s not found." id)
             )

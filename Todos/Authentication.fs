@@ -6,7 +6,8 @@ open Suave.State.CookieStateStore
 open Suave.Authentication
 
 type LoggedUser = {
-    Email : string
+    Id : string
+    FullName : string
 }
 
 type SessionType = 
@@ -18,9 +19,9 @@ let session f =
     context (fun ctx ->
         match HttpContext.state ctx with 
             | Some state -> 
-                match state.get "email" with 
-                    | Some email -> f (LoggedUserSession {Email = email})
-                    | None -> f NoSession
+                match (state.get "userId", state.get "userFullName")  with 
+                    | Some(id), Some(fullName) -> f (LoggedUserSession {Id = id; FullName = fullName})
+                    | _ -> f NoSession
             | None -> f NoSession)
 
 let sessionStore setterFunction = context (fun ctx ->

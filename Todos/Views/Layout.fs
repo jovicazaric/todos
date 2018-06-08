@@ -19,7 +19,7 @@ let navigationActions user  =
             div [Attributes.classAttr "collapse navbar-collapse"] [
                 tag "ul" [Attributes.classAttr "navbar-nav ml-auto"] [
                     tag "li" [Attributes.classAttr "navbar-text"] [
-                        Text (sprintf "Hi, %s" user.Email)
+                        Text (sprintf "Hi, %s" user.FullName)
                     ]
                     tag "li" [Attributes.classAttr "nav-item"] [
                         a "#" [Attributes.classAttr "nav-link"] [Text "Account"]

@@ -1,8 +1,6 @@
 module Todos.Database
 
 open System
-open Suave.Logging
-open System.Collections.Generic
 
 type Todo = {
     Id: string
@@ -11,6 +9,42 @@ type Todo = {
     mutable HappeningAt: DateTime
     mutable IsCompleted: bool
 }
+
+type User = {
+    Id : string
+    FirstName : string
+    LastName : string
+    Email : string
+    Password : string
+}
+
+let mutable Users = [
+    {
+        Id = "A16247C4-E638-405F-8CB9-04DF26F3B3AA"
+        FirstName = "Pero"
+        LastName = "Peric"
+        Email = "pero@peric.com"
+        Password = "111"
+    };
+    {
+        Id = "A16247C4-E638-405F-8CB9-04DF26F3B3AB"
+        FirstName = "Ziko"
+        LastName = "Zikic"
+        Email = "ziko@zikic.com"
+        Password = "111"
+    }
+]
+
+let TryFindUserByEmailPassword email password : User option = List.tryFind (fun x -> x.Email = email && x.Password = password) Users
+
+let TryFindUserByEmail email : User option = List.tryFind (fun x -> x.Email = email) Users
+
+let TryFindUserById id : User option = List.tryFind (fun x -> x.Id = id) Users
+
+let AddUser user =
+    Users <- List.append Users [user]
+    printfn "Total users %d" Users.Length
+    Seq.iter (fun x -> printfn "%A" x) Users
 
 let mutable TodoItems = [
     { 
@@ -55,11 +89,14 @@ let AddNewTodo todo =
     printfn "Total todos %d" TodoItems.Length
     Seq.iter (fun x -> printfn "%A" x) TodoItems
     
-let TryFindTodo id = List.tryFind (fun x -> x.Id = id) TodoItems
+let TryFindTodo id : Todo option = List.tryFind (fun x -> x.Id = id) TodoItems
 
-let MarkAsCompleted id = 
-    let todo = List.find (fun x -> x.Id = id) TodoItems
+let CompleteTodo id = 
+    let todo : Todo = List.find (fun x -> x.Id = id) TodoItems
     todo.IsCompleted <- true
     printfn "Mark as completed."
     Seq.iter (fun x -> printfn "%A" x) TodoItems
     |> ignore
+
+
+ 
