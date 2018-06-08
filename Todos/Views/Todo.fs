@@ -61,12 +61,12 @@ let private renderNewTodoLink = function
 let private mainContent todo errorMessage = 
     div [] [
         div [Attributes.classAttr "row"] [
-            div [Attributes.classAttr "offset-md-4 col-md-4"] [
+            div [Attributes.classAttr "offset-lg-4 col-lg-5"] [
                 Nodes.h2 (title todo)
             ]
         ]
         div [Attributes.classAttr "row"] [
-            div [Attributes.classAttr "offset-md-4 col-md-4"] [
+            div [Attributes.classAttr "offset-lg-4 col-lg-5"] [
                 Nodes.form [Attributes.methodAttr "post"] [
                     div [Attributes.classAttr "form-group"] [
                         Nodes.label "Title *"
