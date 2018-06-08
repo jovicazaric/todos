@@ -12,6 +12,7 @@ open Todos.Views
 open Todos.Forms
 open Todos
 open Suave.Cookie
+open System
 
 let bindToForm form success error = 
     request (fun req ->
@@ -78,7 +79,21 @@ let registration =
         POST >=> Authentication.sessionBasedActions 
             (Redirection.FOUND Paths.Pages.Home)
             (bindToForm RegistrationForm.Form 
-                (fun _form ->  buildPage OK (Views.Registration.content None)) 
+                (fun form ->
+                    match Database.TryFindUserByEmail form.Email with 
+                        | Some x -> buildPage BAD_REQUEST (Views.Registration.content (Some (sprintf "User with %s email already registered. Please try using another email." x.Email)))
+                        | None ->
+                            let (Password password) = form.Password
+                            let newUser = {
+                                Database.User.Id = Guid.NewGuid().ToString()
+                                Database.User.FirstName = form.FirstName
+                                Database.User.LastName = form.LastName
+                                Database.User.Email = form.Email
+                                Database.User.Password = password
+                            }
+                            Database.AddUser newUser
+                            Redirection.FOUND Paths.Pages.Login
+                ) 
                 (Views.Registration.content >> buildPage BAD_REQUEST))
     ]
 
@@ -105,7 +120,7 @@ let todo =
                             x.HappeningAt <- form.TMHappeningAt
                         | None ->
                             let newTodo = {
-                                Database.Todo.Id = System.Guid.NewGuid().ToString()
+                                Database.Todo.Id = Guid.NewGuid().ToString()
                                 Database.Todo.Title = form.TMTitle
                                 Database.Todo.Description = form.TMDescription
                                 Database.Todo.HappeningAt = form.TMHappeningAt
