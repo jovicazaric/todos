@@ -44,34 +44,12 @@ let private mainContent todos =
                 a Paths.Pages.Todo [Attributes.classAttr "btn btn-success"] [
                     Text "+ New todo"
                 ]
-                // Nodes.ul [] [
-                //     Nodes.li [] [
-                //         a Paths.Pages.Registration [] [
-                //             Text "All"
-                //         ]
-                //     ]
-                //     Nodes.li [] [
-                //         a Paths.Pages.Registration [] [
-                //             Text "Upcomming"
-                //         ]
-                //     ]
-                //     Nodes.li [] [
-                //         a Paths.Pages.Registration [] [
-                //             Text "Completed"
-                //         ]
-                //     ]
-                //     Nodes.li [] [
-                //         a Paths.Pages.Registration [] [
-                //             Text "Incompleted"
-                //         ]
-                //     ]
-                // ]
             ]
             div [Attributes.classAttr "col-md-9"] [
                 Nodes.h2 "Todos"
                 p [] [Text "Try using filter options on the left side panel."]
                 Text "Legend: "
-                Nodes.ul [] [
+                Nodes.ul [Attributes.classAttr "legend-list"] [
                     Nodes.li [] [
                         div [Attributes.classAttr "legend-item todo-item-upcomming"] []
                         Text "Upcomming"

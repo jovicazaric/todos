@@ -83,3 +83,8 @@ span.error {
   height: 15px;
   margin: 0px 10px 0px 0px;
 }
+
+ul.legend-list {
+  list-style-type: none;
+  padding-left: 15px;
+}
