@@ -37,9 +37,20 @@ let validateUser email password =
     else
         None
 
+let handleErrorOnTodoPost error = 
+    (request (fun req ->
+        match req.formData "TMId" with
+            | Choice1Of2 id when id <> "" -> 
+                match Database.TryFindTodo id with 
+                    | Some t -> (buildPage BAD_REQUEST (Views.Todo.content (Some(t)) error))
+                    | None -> BAD_REQUEST (sprintf "Todo with id %s not found" id)
+            | Choice1Of2 _ -> (buildPage BAD_REQUEST (Views.Todo.content None error))
+            | Choice2Of2 _ -> (buildPage BAD_REQUEST (Views.Todo.content None error))
+    ))
+
 let home =
     choose [
-        GET >=> Authentication.sessionBasedActions (buildPage OK (Views.Home.content (List.ofSeq Database.todoItems))) (Redirection.FOUND Paths.Pages.Login)
+        GET >=> Authentication.sessionBasedActions (buildPage OK (Views.Home.content (List.ofSeq Database.TodoItems))) (Redirection.FOUND Paths.Pages.Login)
     ]
     
 let login = 
@@ -81,6 +92,29 @@ let todo =
                     | Choice2Of2 _ -> buildPage OK (Views.Todo.content None None) 
             )) 
             (Redirection.FOUND Paths.Pages.Login)
+        POST >=> Authentication.sessionBasedActions
+            (bindToForm TodoForm.Form 
+                (fun form ->
+                    let todo = Database.TryFindTodo form.TMId
+                    match todo with
+                        | Some x -> 
+                            x.Title <- form.TMTitle
+                            x.Description <- form.TMDescription
+                            x.HappeningAt <- form.TMHappeningAt
+                        | None ->
+                            let newTodo = {
+                                Database.Todo.Id = System.Guid.NewGuid().ToString()
+                                Database.Todo.Title = form.TMTitle
+                                Database.Todo.Description = form.TMDescription
+                                Database.Todo.HappeningAt = form.TMHappeningAt
+                                Database.Todo.IsCompleted = false
+                            }
+                            Database.AddNewTodo newTodo
+                    Redirection.FOUND Paths.Pages.Home
+                )
+                handleErrorOnTodoPost
+            )
+            (FORBIDDEN "You must be authenticated to perform this action.")          
     ]
 
 let completeTodo =

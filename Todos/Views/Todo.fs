@@ -16,24 +16,24 @@ let private title = function
     | Some x -> sprintf "Edit - %s" x.Title
     | None -> "New todo"
 
-let submitButtonText = function 
+let private submitButtonText = function 
     | Some _ -> "Edit"
     | None -> "Create"
 
 
-let todoTitle = function 
+let private todoTitle = function 
     | Some x -> x.Title
     | None -> ""
 
-let todoDescription = function 
+let private todoDescription = function 
     | Some x -> x.Description
     | None -> ""
 
-let todoHappeningAt = function 
+let private todoHappeningAt = function 
     | Some x -> x.HappeningAt.ToString "yyyy-MM-ddTHH:mm"
     | None -> ""
 
-let renderDescription todo = 
+let private renderDescription todo = 
     let text = 
         match todo with
             | Some x -> x.Description
@@ -41,7 +41,7 @@ let renderDescription todo =
 
     Nodes.textArea [Attributes.classAttr "form-control"; Attributes.nameAttr "TMDescription"; Attributes.rowsAttr 5] text
 
-let renderHiddenId todo =
+let private renderHiddenId todo =
     let id = 
         match todo with 
             | Some x -> x.Id
@@ -49,7 +49,7 @@ let renderHiddenId todo =
 
     Suave.Html.input [Attributes.typeAttr "hidden"; Attributes.valueAttr id; Attributes.nameAttr "TMId"]
 
-let renderNewTodoLink = function 
+let private renderNewTodoLink = function 
     | Some _ -> 
         p [] [
             Text "Or "

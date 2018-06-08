@@ -13,9 +13,6 @@ type TodoModel = {
 let titleNotEmpty =
     (fun x -> x.TMTitle <> ""), "Title is required"
 
-let descriptionNotEmpty = 
-    (fun x -> x.TMDescription <> ""), "Description is required"
-
 let happeningAtInFuture = 
     (fun x -> x.TMHappeningAt > DateTime.Now), "Happening at must be in the future"
 
@@ -24,4 +21,4 @@ let Form : Form<TodoModel> =
             TextProp ((fun x -> <@ x.TMTitle @>), [])
             TextProp ((fun x -> <@ x.TMDescription @>), [])
             DateTimeProp ((fun x -> <@ x.TMHappeningAt @>), [])
-    ], [titleNotEmpty; descriptionNotEmpty; happeningAtInFuture])
+    ], [titleNotEmpty; happeningAtInFuture])
