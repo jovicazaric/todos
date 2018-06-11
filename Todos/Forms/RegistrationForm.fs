@@ -10,22 +10,22 @@ type Registration = {
     ConfirmPassword : Password
 }
 
-let firstNameNotEmpty =
+let private firstNameNotEmpty =
     (fun x -> x.FirstName <> ""), "First name is required"
 
-let lastNameNotEmpty =
+let private lastNameNotEmpty =
     (fun x -> x.LastName <> ""), "Last name is required"
 
-let emailNotEmpty =
+let private emailNotEmpty =
     (fun x -> x.Email <> ""), "Email is required"
 
-let passwordNotEmpty =
+let private passwordNotEmpty =
     (fun x -> x.Password <>  Password("")), "Password is required"
 
-let confirmPasswordNotEmpty =
+let private confirmPasswordNotEmpty =
     (fun x -> x.ConfirmPassword <> Password("")), "Confirm password is required"
 
-let checkPasswords =
+let private checkPasswords =
     (fun x -> x.Password = x.ConfirmPassword), "Confirm password must match password"
 
 let Form : Form<Registration> =

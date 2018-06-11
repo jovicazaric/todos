@@ -8,12 +8,12 @@ type Login = {
 }
 
 [<Literal>]
-let RequiredFieldsErrorMessage = "Both email and password inputs are required"
+let private RequiredFieldsErrorMessage = "Both email and password inputs are required"
 
-let emailNotEmpty =
+let private emailNotEmpty =
     (fun x -> x.Email <> ""), RequiredFieldsErrorMessage
 
-let passwordNotEmpty =
+let private passwordNotEmpty =
     (fun x -> x.Password <>  Password("")), RequiredFieldsErrorMessage
 
 let Form : Form<Login> =

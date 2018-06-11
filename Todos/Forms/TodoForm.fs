@@ -10,10 +10,10 @@ type TodoModel = {
     TMHappeningAt : DateTime
 }
 
-let titleNotEmpty =
+let private titleNotEmpty =
     (fun x -> x.TMTitle <> ""), "Title is required"
 
-let happeningAtInFuture = 
+let private happeningAtInFuture = 
     (fun x -> x.TMHappeningAt > DateTime.Now), "Happening at must be in the future"
 
 let Form : Form<TodoModel> = 

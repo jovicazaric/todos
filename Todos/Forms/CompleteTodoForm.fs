@@ -7,9 +7,9 @@ type CompleteTodoModel = {
 }
 
 [<Literal>]
-let ErrorMessage = "Id is missing or in invalid format."
+let private ErrorMessage = "Id is missing or in invalid format."
 
-let isIdValid =
+let private isIdValid =
     (fun x -> x.Id <> ""), ErrorMessage
 
 let Form : Form<CompleteTodoModel> =
