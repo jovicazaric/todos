@@ -22,7 +22,10 @@ let navigationActions user  =
                         Text (sprintf "Hi, %s" user.FullName)
                     ]
                     Nodes.li [Attributes.classAttr "nav-item"] [
-                        a Paths.Pages.Account [Attributes.classAttr "nav-link"] [Text "Account"]
+                        a Paths.Pages.UserDetails [Attributes.classAttr "nav-link"] [Text "User details"]
+                    ]
+                    Nodes.li [Attributes.classAttr "nav-item"] [
+                        a Paths.Pages.ChangePassword [Attributes.classAttr "nav-link"] [Text "Change password"]
                     ]
                     Nodes.li [Attributes.classAttr "nav-item"] [
                         a Paths.Actions.Logout [Attributes.classAttr "nav-link"] [Text "Logout"]
@@ -34,7 +37,7 @@ let navigationActions user  =
 let private navigation user = 
     tag "nav" [Attributes.classAttr "navbar navbar-expand-lg navbar-dark bg-dark fixed-top"] [
         div [Attributes.classAttr "container"] [
-            a "/" [Attributes.classAttr "navbar-brand"] [Text "Home"]
+            a Paths.Pages.Home [Attributes.classAttr "navbar-brand"] [Text "Home"]
             navigationActions user
         ]
     ]

@@ -1,6 +1,7 @@
 module Todos.Database
 
 open System
+open System.Net.NetworkInformation
 
 type Todo = {
     Id: string
@@ -12,10 +13,10 @@ type Todo = {
 
 type User = {
     Id : string
-    FirstName : string
-    LastName : string
-    Email : string
-    Password : string
+    mutable FirstName : string
+    mutable LastName : string
+    mutable Email : string
+    mutable Password : string
 }
 
 let mutable Users = [
@@ -45,6 +46,14 @@ let AddUser user =
     Users <- List.append Users [user]
     printfn "Total users %d" Users.Length
     Seq.iter (fun x -> printfn "%A" x) Users
+
+let IsUserEmailValidOnUpdate user newEmail = 
+    match user.Email = newEmail with 
+        | false ->
+            match TryFindUserByEmail newEmail with 
+                | Some x -> x.Id = user.Id
+                | None -> true
+        | _ -> true
 
 let mutable TodoItems = [
     { 

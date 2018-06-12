@@ -37,7 +37,8 @@
     <Compile Include="Views/Login.fs" />
     <Compile Include="Views/Todo.fs" />
     <Compile Include="Views/Home.fs" />
-    <Compile Include="Views/Account.fs" />
+    <Compile Include="Views/ChangePassword.fs" />
+    <Compile Include="Views/UserDetails.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />

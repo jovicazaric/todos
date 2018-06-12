@@ -33,7 +33,10 @@ module Pages =
     let Todo = "/todo"
 
     [<Literal>]
-    let Account = "/account"
+    let UserDetails = "/user-details"
+
+    [<Literal>]
+    let ChangePassword = "/change-password"
 
 module Actions = 
 
@@ -42,4 +45,3 @@ module Actions =
 
     [<Literal>]
     let CompleteTodo = "/complete-todo"
-
