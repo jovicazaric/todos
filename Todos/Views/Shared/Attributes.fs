@@ -14,6 +14,8 @@ let valueAttr (value : string) = ("value", value)
 
 let methodAttr (value : string) = ("method", value)
 
+let novalidateAttr = ("novalidate", "novalidate")
+
 let actionAttr (value : string) = ("action", value)
 
 let charsetAttr (value : string) = ("charset", value)

@@ -38,7 +38,8 @@ span.error {
 
 .todo-item {
   padding: 20px;
-  margin: 5px;
+  border: solid white 5px;
+
 }
 
 .todo-item-completed {
@@ -87,4 +88,9 @@ span.error {
 ul.legend-list {
   list-style-type: none;
   padding-left: 15px;
+}
+
+input[type='checkbox'] {
+  width: 10%;
+  height: 30px;
 }

@@ -1,7 +1,6 @@
 module Todos.Database
 
 open System
-open System.Net.NetworkInformation
 
 type Todo = {
     Id: string
@@ -55,7 +54,7 @@ let IsUserEmailValidOnUpdate user newEmail =
                 | None -> true
         | _ -> true
 
-let mutable TodoItems = [
+let mutable private todoItems = [
     { 
         Id = "A16247C4-E638-405F-8CB9-04DF26F3B3A1";
         Title = "Pellentesque malesuada laoreet"; 
@@ -93,18 +92,20 @@ let mutable TodoItems = [
     }
 ]
 
+let GetTodos =
+    List.sortByDescending (fun x -> x.HappeningAt) todoItems
 let AddNewTodo todo = 
-    TodoItems <- List.append TodoItems [todo]
-    printfn "Total todos %d" TodoItems.Length
-    Seq.iter (fun x -> printfn "%A" x) TodoItems
+    todoItems <- List.append todoItems [todo]
+    printfn "Total todos %d" todoItems.Length
+    Seq.iter (fun x -> printfn "%A" x) todoItems
     
-let TryFindTodo id : Todo option = List.tryFind (fun x -> x.Id = id) TodoItems
+let TryFindTodo id : Todo option = List.tryFind (fun x -> x.Id = id) todoItems
 
 let CompleteTodo id = 
-    let todo : Todo = List.find (fun x -> x.Id = id) TodoItems
+    let todo : Todo = List.find (fun x -> x.Id = id) todoItems
     todo.IsCompleted <- true
     printfn "Mark as completed."
-    Seq.iter (fun x -> printfn "%A" x) TodoItems
+    Seq.iter (fun x -> printfn "%A" x) todoItems
     |> ignore
 
 

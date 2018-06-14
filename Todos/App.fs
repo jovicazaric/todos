@@ -40,8 +40,6 @@ let handleErrorOnTodoPost error =
             | Choice2Of2 _ -> (buildPage BAD_REQUEST (Views.Todo.content None error))
     ))
 
-
-
 let handleUserDetailsUpdate (user : Database.User) =
     (bindToForm UserDetailsForm.UserDetailsForm 
         (fun form -> 
@@ -67,13 +65,23 @@ let handleChangePassword (user : Database.User) =
                 | _ -> buildPage BAD_REQUEST (Views.ChangePassword.content (Some ("Current password is invalid")))
         )
         (Views.ChangePassword.content >> buildPage BAD_REQUEST))
-    
 
 let home =
     choose [
         GET >=> Authentication.SessionBasedActions 
-            (buildPage OK (Views.Home.content (List.ofSeq Database.TodoItems)))
+            (buildPage OK (Views.Home.content Database.GetTodos None None))
             (Redirection.FOUND Paths.Pages.Login)
+        POST >=> Authentication.SessionBasedActions 
+            (bindToForm TodoFilterForm.TodoFilterForm 
+                (fun form ->
+                    form
+                    |> Filter.filterTodos Database.GetTodos
+                    |> Views.Home.content <| None <| None
+                    |> buildPage OK
+                )
+                (Views.Home.content Database.GetTodos None >> buildPage BAD_REQUEST)
+            )
+            (FORBIDDEN "You must be authenticated to perform this action.")
     ]
     
 let login = 
@@ -163,7 +171,7 @@ let todo =
                 )
                 handleErrorOnTodoPost
             )
-            (FORBIDDEN "You must be authenticated to perform this action.")          
+            (FORBIDDEN "You must be authenticated to perform this action.")
     ]
 
 let completeTodo =

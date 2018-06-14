@@ -7,7 +7,6 @@ type UserDetailsModel = {
     UDMLastName : string
     UDMEmail : string
 }
-
 let private firstNameNotEmpty =
     (fun x -> x.UDMFirstName <> ""), "First name is requred"
 

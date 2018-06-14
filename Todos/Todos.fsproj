@@ -32,6 +32,7 @@
     <Compile Include="Forms/CompleteTodoForm.fs" />
     <Compile Include="Forms/ChangePasswordForm.fs" />
     <Compile Include="Forms/UserDetailsForm.fs" />
+    <Compile Include="Forms/TodoFilterForm.fs" />
     <Compile Include="Views/Layout.fs" />
     <Compile Include="Views/Registration.fs" />
     <Compile Include="Views/Login.fs" />
@@ -39,6 +40,7 @@
     <Compile Include="Views/Home.fs" />
     <Compile Include="Views/ChangePassword.fs" />
     <Compile Include="Views/UserDetails.fs" />
+    <Compile Include="Filter.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
   <Import Project="..\.paket\Paket.Restore.targets" />
