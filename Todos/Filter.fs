@@ -15,7 +15,7 @@ let private filterTodosByTo toDate todos =
  
 let private filterTodosByCompleted completed todos =
     match completed with 
-        | Some x when x = 1M -> List.where (fun x -> x.IsCompleted) todos
+        | 1M -> List.where (fun x -> x.IsCompleted) todos
         | _ -> List.where (fun x -> not x.IsCompleted) todos
     
 

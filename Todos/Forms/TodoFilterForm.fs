@@ -6,11 +6,11 @@ open System
 type TodoFilterModel = {
     TFMFrom : DateTime option
     TFMTo : DateTime option
-    TFMIsCompleted : Decimal option
+    TFMIsCompleted : Decimal
 }
 
 let TodoFilterForm : Form<TodoFilterModel> =
     Form ([ DateTimeProp ((fun x -> <@ x.TFMFrom.Value @>), [])
             DateTimeProp ((fun x -> <@ x.TFMTo.Value @>), [])
-            DecimalProp ((fun x -> <@ x.TFMIsCompleted.Value @>), [])
+            DecimalProp ((fun x -> <@ x.TFMIsCompleted @>), [])
     ], [])

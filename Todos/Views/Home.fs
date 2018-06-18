@@ -6,18 +6,17 @@ open Todos.Views.Layout
 open Todos.Views.Shared
 open Todos.Forms.TodoFilterForm
 open Todos
+open Todos.Views
 
 let private insertErrorMessage = function
     | Some x -> span [Attributes.classAttr "error"] [Text x] 
     | _ -> Text ""
 
 let getTodoItemCssClass (todo : Database.Todo) =
-    if todo.IsCompleted then
-        "completed"
-    else if todo.HappeningAt < DateTime.Now then
-        "incompleted"
-    else 
-        "upcomming"
+    match todo.IsCompleted with
+        | true -> "completed"
+        | false when todo.HappeningAt < DateTime.Now -> "incompleted"
+        | _ -> "upcomming"
 
 let private renderControls (todo : Database.Todo) =
     match todo.IsCompleted with
@@ -43,7 +42,7 @@ let private renderTodoItems (todos : Database.Todo list) =
     List.map renderTodoItem todos
 
 let private renderFilterFrom (filter : TodoFilterModel option) =
-    let value = 
+    let value =
         if filter.IsSome && filter.Value.TFMFrom.IsSome 
         then filter.Value.TFMFrom.Value.ToString "yyyy-MM-ddTHH:mm" 
         else ""
@@ -57,6 +56,19 @@ let private renderFilterTo (filter : TodoFilterModel option) =
         else ""
 
     Suave.Form.input (fun x -> <@ x.TFMTo @>) [Attributes.classAttr "form-control"; Attributes.valueAttr value] TodoFilterForm
+
+let private renderFilterCompleted (filter : TodoFilterModel option) =
+    match filter with
+        | Some x when x.TFMIsCompleted = 1.0M -> 
+            div [] [
+                Suave.Html.input [Attributes.classAttr "form-control"; Attributes.typeAttr "checkbox"; Attributes.nameAttr "TFMIsCompleted"; Attributes.checkedAttr; Attributes.valueAttr "1"] 
+                Suave.Html.input [Attributes.typeAttr "hidden"; Attributes.nameAttr "TFMIsCompleted"; Attributes.valueAttr "0"]         
+            ]
+        | _ -> 
+            div [] [
+                Suave.Html.input [Attributes.classAttr "form-control"; Attributes.typeAttr "checkbox"; Attributes.nameAttr "TFMIsCompleted"; Attributes.valueAttr "1"] 
+                Suave.Html.input [Attributes.typeAttr "hidden"; Attributes.nameAttr "TFMIsCompleted"; Attributes.valueAttr "0"]         
+            ]
     
 let private renderFilterForm (filter : TodoFilterModel option) errorMessage = 
     div [] [
@@ -72,8 +84,7 @@ let private renderFilterForm (filter : TodoFilterModel option) errorMessage =
             ]
             div [Attributes.classAttr "form-group"] [
                 Nodes.label "Completed"
-                Suave.Html.input [Attributes.classAttr "form-control"; Attributes.typeAttr "checkbox"; Attributes.nameAttr "TFMIsCompleted"; Attributes.valueAttr "1"] 
-                Suave.Html.input [Attributes.typeAttr "hidden"; Attributes.nameAttr "TFMIsCompleted"; Attributes.valueAttr "0"] 
+                renderFilterCompleted filter
             ]
             insertErrorMessage errorMessage
             div [Attributes.classAttr "form-group"] [

@@ -12,6 +12,8 @@ let nameAttr (value : string) = ("name", value)
 
 let valueAttr (value : string) = ("value", value)
 
+let checkedAttr = ("checked", "checked")
+
 let methodAttr (value : string) = ("method", value)
 
 let novalidateAttr = ("novalidate", "novalidate")

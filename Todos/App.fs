@@ -154,7 +154,6 @@ let home =
                     | Authentication.LoggedUserSession userData ->
                         (bindToForm TodoFilterForm.TodoFilterForm 
                             (fun form ->
-                                printfn "%A" form
                                 Database.getTodos userData.Id
                                 |> Filter.filterTodos <| form 
                                 |> Views.Home.content <| Some form <| None
