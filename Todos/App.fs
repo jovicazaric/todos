@@ -43,7 +43,7 @@ let createUser (form : RegistrationForm.Registration) =
         Database.User.Password = password
     }
 
-let updateUserDetails (form : UserDetailsForm.UserDetailsModel)  user =
+let updateUserDetails (form : UserDetailsForm.UserDetailsModel) user =
     { 
         user with 
             Database.User.FirstName = form.UDMFirstName
@@ -70,7 +70,7 @@ let bindToForm form success error =
 let buildPage responseType pageData = 
     let result = Layout.buildPage pageData 
     
-    Authentication.Session (fun s ->
+    Authentication.session (fun s ->
         match s with 
             | Authentication.LoggedUserSession user -> 
                 Some user 
@@ -139,7 +139,7 @@ let handleChangePassword (user : Database.User) =
 
 let home =
     choose [
-        GET >=> Authentication.Session
+        GET >=> Authentication.session
             (fun s ->
                 match s with 
                     | Authentication.LoggedUserSession userData ->
@@ -148,7 +148,7 @@ let home =
                         |> buildPage OK
                     | Authentication.NoSession -> Redirection.FOUND Paths.Pages.Login
             )
-        POST >=> Authentication.Session
+        POST >=> Authentication.session
             (fun s ->
                 match s with 
                     | Authentication.LoggedUserSession userData ->
@@ -171,21 +171,23 @@ let home =
     
 let login = 
     choose [
-        GET >=> Authentication.SessionBasedActions 
+        GET >=> Authentication.sessionBasedActions 
             (Redirection.FOUND Paths.Pages.Home) 
-            (Views.Login.content None |> buildPage OK)
-        POST >=> Authentication.SessionBasedActions 
+            (
+                Views.Login.content None 
+                |> buildPage OK
+            )
+        POST >=> Authentication.sessionBasedActions 
             (Redirection.FOUND Paths.Pages.Home)
             (bindToForm LoginForm.Form 
                 (fun form -> 
                     let (Password password) = form.Password
-                    let user = Database.tryFindUserByEmailPassword form.Email password
-                    match user with
-                        | Some x ->
+                    match Database.tryFindUserByEmailPassword form.Email password with
+                        | Some user ->
                             authenticated Cookie.CookieLife.Session false >=> 
-                            Authentication.Session (fun _ -> succeed) >=>
-                            Authentication.SessionStore (fun store -> store.set "userId" x.Id) >=>
-                            Authentication.SessionStore (fun store -> store.set "userFullName" (sprintf "%s %s" x.FirstName x.LastName)) >=>
+                            Authentication.session (fun _ -> succeed) >=>
+                            Authentication.sessionStore (fun store -> store.set "userId" user.Id) >=>
+                            Authentication.sessionStore (fun store -> store.set "userFullName" (sprintf "%s %s" user.FirstName user.LastName)) >=>
                             Redirection.FOUND Paths.Pages.Home
                         | None ->  
                             Some "Invalid email or password"
@@ -206,16 +208,19 @@ let logout =
 
 let registration = 
     choose [
-        GET >=> Authentication.SessionBasedActions 
+        GET >=> Authentication.sessionBasedActions 
             (Redirection.FOUND Paths.Pages.Home)
-            (Views.Registration.content None |> buildPage OK)
-        POST >=> Authentication.SessionBasedActions 
+            (   
+                Views.Registration.content None 
+                |> buildPage OK
+            )
+        POST >=> Authentication.sessionBasedActions 
             (Redirection.FOUND Paths.Pages.Home)
             (bindToForm RegistrationForm.Form 
                 (fun form ->
                     match Database.tryFindUserByEmail form.Email with 
-                        | Some x -> 
-                            sprintf "User with %s email already registered. Please try using another email." x.Email
+                        | Some user -> 
+                            sprintf "User with %s email already registered. Please try using another email." user.Email
                             |> Some
                             |> Views.Registration.content
                             |> buildPage BAD_REQUEST
@@ -233,13 +238,13 @@ let registration =
 
 let todo = 
     choose [
-        GET >=> Authentication.SessionBasedActions 
+        GET >=> Authentication.sessionBasedActions 
             (request (fun req ->
                 match req.queryParam "id" with 
                     | Choice1Of2 id -> 
                         match Database.tryFindTodo id with 
-                            | Some t -> 
-                                Some t
+                            | Some todo -> 
+                                Some todo
                                 |> Views.Todo.content <| None
                                 |> buildPage OK
                             | None -> 
@@ -248,18 +253,17 @@ let todo =
                     | Choice2Of2 _ -> 
                         Views.Todo.content None None 
                         |> buildPage OK 
-            )) 
+            ))
             (Redirection.FOUND Paths.Pages.Login)
-        POST >=> Authentication.Session
+        POST >=> Authentication.session
             (fun s ->
                 match s with 
                     | Authentication.LoggedUserSession userData ->
                         (bindToForm TodoForm.Form 
                             (fun form ->
-                                let todo = Database.tryFindTodo form.TMId
-                                match todo with
-                                    | Some x -> 
-                                        updateTodo form x 
+                                match Database.tryFindTodo form.TMId with
+                                    | Some todo -> 
+                                        updateTodo form todo 
                                         |> Database.updateTodo
                                     | None ->
                                         createTodo form userData.Id 
@@ -274,22 +278,18 @@ let todo =
 
 let completeTodo =
     choose [
-        POST >=> Authentication.SessionBasedActions
+        POST >=> Authentication.sessionBasedActions
             (bindToForm CompleteTodoForm.Form 
                 (fun form -> 
-                    let id = form.Id
-                    let todo = Database.tryFindTodo id
-
-                    match todo with 
-                        | Some x -> 
-                            if (x.IsCompleted) then
-                                sprintf "Todo with id %s has been already completed." x.Id
+                    match Database.tryFindTodo form.Id with 
+                        | Some todo when todo.IsCompleted ->
+                                sprintf "Todo with id %s has been already completed." todo.Id
                                 |> BAD_REQUEST
-                            else
-                                Database.completeTodo x.Id
+                        | Some todo when not todo.IsCompleted ->
+                                Database.completeTodo todo.Id
                                 Redirection.FOUND Paths.Pages.Home
-                        | None -> 
-                            sprintf "Todo with id %s not found." id
+                        | _ ->
+                            sprintf "Todo with id %s not found." form.Id
                             |> BAD_REQUEST
                 )
                 (fun error -> error.Value |> BAD_REQUEST)
@@ -299,26 +299,24 @@ let completeTodo =
 
 let userDetails =
     choose [
-        GET >=> Authentication.Session 
+        GET >=> Authentication.session 
             (fun s ->
                 match s with 
                     | Authentication.LoggedUserSession userData -> 
-                        let user = Database.tryFindUserById userData.Id
-                        match user with 
-                            | Some x -> 
-                                Views.UserDetails.content x None
+                        match Database.tryFindUserById userData.Id with 
+                            | Some user -> 
+                                Views.UserDetails.content user None
                                 |> buildPage OK
                             | None ->
                                 sprintf "User with id %s not found." userData.Id
                                 |> NOT_FOUND
                     | Authentication.NoSession -> Redirection.FOUND Paths.Pages.Login
             )
-        POST >=> Authentication.Session
+        POST >=> Authentication.session
             (fun s ->
                 match s with 
                     | Authentication.LoggedUserSession userData -> 
-                        let user = Database.tryFindUserById userData.Id
-                        match user with 
+                        match Database.tryFindUserById userData.Id with 
                             | Some user -> 
                                 handleUserDetailsUpdate user
                             | None -> 
@@ -330,15 +328,17 @@ let userDetails =
 
 let changePassword =
     choose [
-        GET >=> Authentication.SessionBasedActions
-            (Views.ChangePassword.content None |> buildPage OK)
+        GET >=> Authentication.sessionBasedActions
+            (
+                Views.ChangePassword.content None 
+                |> buildPage OK
+            )
             (Redirection.FOUND Paths.Pages.Home)
-        POST >=> Authentication.Session
+        POST >=> Authentication.session
             (fun s ->
                 match s with 
                     | Authentication.LoggedUserSession userData -> 
-                        let user = Database.tryFindUserById userData.Id
-                        match user with 
+                        match Database.tryFindUserById userData.Id with 
                             | Some user -> 
                                 handleChangePassword user
                             | None -> 
@@ -360,7 +360,6 @@ let resultWebPart =
         path Paths.Actions.CompleteTodo >=> completeTodo
         path Paths.Actions.Logout >=> logout
         pathRegex "(.*)\.css" >=> Files.browseHome
-        pathRegex "(.*)\.js" >=> Files.browseHome
     ]
 
 startWebServer defaultConfig resultWebPart

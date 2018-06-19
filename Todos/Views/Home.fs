@@ -136,4 +136,4 @@ let private mainContent todos filter errorMessage =
     ]
 
 let content todos filter errorMessage  =
-    { Title = "Home"; Content = mainContent todos filter errorMessage}
+    { Title = "Home"; Content = mainContent todos filter errorMessage }

@@ -11,15 +11,6 @@
     <Content Include="assets/css/style.css">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="assets/js/lib/jquery-3.3.1.min.js">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets/js/main.js">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="assets/js/home.js">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Compile Include="Paths.fs" />
     <Compile Include="Database.fs" />
     <Compile Include="Authentication.fs" />

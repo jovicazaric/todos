@@ -13,7 +13,7 @@ type PageData = {
 let private composeTitle pageTitle =
     title [] (sprintf "%s | Todos" pageTitle)
 
-let navigationActions user  = 
+let private navigationActions user  = 
     match user with
         | Some user ->
             div [Attributes.classAttr "collapse navbar-collapse"] [
@@ -63,9 +63,6 @@ let buildPage pageData user =
                     p [Attributes.classAttr "m-0 text-right text-white"] [Text "Copyright © Todos WebApp By Jovica Zaric 2018"]
                 ]
             ]
-
-            Nodes.scriptLink Paths.Assets.JS.Lib.JQuery
-            Nodes.scriptLink Paths.Assets.JS.Main
         ]
     ]
     |> htmlToString

@@ -19,7 +19,6 @@ let private submitButtonText = function
     | Some _ -> "Edit"
     | None -> "Create"
 
-
 let private todoTitle = function 
     | Some x -> x.Title
     | None -> ""
@@ -73,7 +72,7 @@ let private mainContent todo errorMessage =
                         Suave.Form.input (fun x -> <@ x.TMTitle @>) [Attributes.classAttr "form-control"; Attributes.valueAttr (todoTitle todo)] Form
                     ]
                     div [Attributes.classAttr "form-group"] [
-                        Nodes.label "Description *"
+                        Nodes.label "Description"
                         renderDescription todo
                     ]
                     div [Attributes.classAttr "form-group"] [
