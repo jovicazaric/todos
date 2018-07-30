@@ -61,23 +61,22 @@ let updateUserPassword (form : ChangePasswordForm.ChangePasswordModel) user =
 let bindToForm form success error = 
     request (fun req ->
                 match bindForm form req with
-                    | Choice1Of2 f -> success f
-                    | Choice2Of2 msg -> 
-                        Some msg 
+                    | Choice1Of2 model -> success model
+                    | Choice2Of2 errorMessage -> 
+                        Some errorMessage 
                         |> error
             )
 
 let buildPage responseType pageData = 
-    let result = Layout.buildPage pageData 
-    
-    Authentication.session (fun s ->
-        match s with 
+
+    Authentication.session (fun session ->
+        match session with 
             | Authentication.LoggedUserSession user -> 
                 Some user 
-                |> result
+                |> Layout.buildPage pageData
                 |> responseType
             | Authentication.NoSession ->
-                result None 
+                Layout.buildPage pageData None 
                 |> responseType
     )
 
@@ -140,8 +139,8 @@ let handleChangePassword (user : Database.User) =
 let home =
     choose [
         GET >=> Authentication.session
-            (fun s ->
-                match s with 
+            (fun sеssion ->
+                match sеssion with 
                     | Authentication.LoggedUserSession userData ->
                         Database.getTodos userData.Id
                         |> Views.Home.content <| None <| None
@@ -149,8 +148,8 @@ let home =
                     | Authentication.NoSession -> Redirection.FOUND Paths.Pages.Login
             )
         POST >=> Authentication.session
-            (fun s ->
-                match s with 
+            (fun sеssion ->
+                match sеssion with 
                     | Authentication.LoggedUserSession userData ->
                         (bindToForm TodoFilterForm.TodoFilterForm 
                             (fun form ->
@@ -184,10 +183,9 @@ let login =
                     let (Password password) = form.Password
                     match Database.tryFindUserByEmailPassword form.Email password with
                         | Some user ->
-                            authenticated Cookie.CookieLife.Session false >=> 
-                            Authentication.session (fun _ -> succeed) >=>
-                            Authentication.sessionStore (fun store -> store.set "userId" user.Id) >=>
-                            Authentication.sessionStore (fun store -> store.set "userFullName" (sprintf "%s %s" user.FirstName user.LastName)) >=>
+                            authenticated Cookie.CookieLife.Session false >=>
+                            Authentication.stateStore (fun store -> store.set "userId" user.Id) >=>
+                            Authentication.stateStore (fun store -> store.set "userFullName" (sprintf "%s %s" user.FirstName user.LastName)) >=>
                             Redirection.FOUND Paths.Pages.Home
                         | None ->  
                             Some "Invalid email or password"
@@ -349,17 +347,17 @@ let changePassword =
 
     ]
 
-let resultWebPart = 
+let webPart = 
     choose [
-        path Paths.Pages.Home >=> home
-        path Paths.Pages.Login >=> login
-        path Paths.Pages.Registration >=> registration
-        path Paths.Pages.Todo >=> todo
-        path Paths.Pages.UserDetails >=> userDetails
-        path Paths.Pages.ChangePassword >=> changePassword
-        path Paths.Actions.CompleteTodo >=> completeTodo
-        path Paths.Actions.Logout >=> logout
+        path Paths.Pages.Home >=> home // "/"
+        path Paths.Pages.Login >=> login // "/login"
+        path Paths.Pages.Registration >=> registration // "/registration"
+        path Paths.Pages.Todo >=> todo // "todo"
+        path Paths.Pages.UserDetails >=> userDetails // "user-details"
+        path Paths.Pages.ChangePassword >=> changePassword // "/change-password"
+        path Paths.Actions.CompleteTodo >=> completeTodo // "/complete-todo"
+        path Paths.Actions.Logout >=> logout // "/logout"
         pathRegex "(.*)\.css" >=> Files.browseHome
     ]
 
-startWebServer defaultConfig resultWebPart
+startWebServer defaultConfig webPart

@@ -16,19 +16,22 @@ let private composeTitle pageTitle =
 let private navigationActions user  = 
     match user with
         | Some user ->
-            div [Attributes.classAttr "collapse navbar-collapse"] [
-                Nodes.ul [Attributes.classAttr "navbar-nav ml-auto"] [
-                    Nodes.li [Attributes.classAttr "navbar-text"] [
-                        Text (sprintf "Hi, %s" user.FullName)
-                    ]
-                    Nodes.li [Attributes.classAttr "nav-item"] [
-                        a Paths.Pages.UserDetails [Attributes.classAttr "nav-link"] [Text "User details"]
-                    ]
-                    Nodes.li [Attributes.classAttr "nav-item"] [
-                        a Paths.Pages.ChangePassword [Attributes.classAttr "nav-link"] [Text "Change password"]
-                    ]
-                    Nodes.li [Attributes.classAttr "nav-item"] [
-                        a Paths.Actions.Logout [Attributes.classAttr "nav-link"] [Text "Logout"]
+            div [Attributes.classAttr "container"] [
+                a Paths.Pages.Home [Attributes.classAttr "navbar-brand"] [Text "Home"]
+                div [Attributes.classAttr "collapse navbar-collapse"] [
+                    Nodes.ul [Attributes.classAttr "navbar-nav ml-auto"] [
+                        Nodes.li [Attributes.classAttr "navbar-text"] [
+                            Text (sprintf "Hi, %s" user.FullName)
+                        ]
+                        Nodes.li [Attributes.classAttr "nav-item"] [
+                            a Paths.Pages.UserDetails [Attributes.classAttr "nav-link"] [Text "User details"]
+                        ]
+                        Nodes.li [Attributes.classAttr "nav-item"] [
+                            a Paths.Pages.ChangePassword [Attributes.classAttr "nav-link"] [Text "Change password"]
+                        ]
+                        Nodes.li [Attributes.classAttr "nav-item"] [
+                            a Paths.Actions.Logout [Attributes.classAttr "nav-link"] [Text "Logout"]
+                        ]
                     ]
                 ]
             ]
@@ -36,10 +39,7 @@ let private navigationActions user  =
 
 let private navigation user = 
     tag "nav" [Attributes.classAttr "navbar navbar-expand-lg navbar-dark bg-dark fixed-top"] [
-        div [Attributes.classAttr "container"] [
-            a Paths.Pages.Home [Attributes.classAttr "navbar-brand"] [Text "Home"]
-            navigationActions user
-        ]
+        navigationActions user
     ]
 
 let buildPage pageData user =

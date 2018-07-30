@@ -14,7 +14,7 @@ let private mainContent errorMessage =
     div [] [
         div [Attributes.classAttr "row"] [
             div [Attributes.classAttr "offset-lg-4 col-lg-5"] [
-                Nodes.h2 "Log in"
+                Nodes.h2 "Login"
                 Nodes.textP "Please enter your credentials to start using application"
             ]
         ]

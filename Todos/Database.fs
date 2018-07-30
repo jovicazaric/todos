@@ -66,6 +66,14 @@ let mutable private todoItems = [
         IsCompleted = true
         UserId = "A16247C4-E638-405F-8CB9-04DF26F3B3AA"
     }
+    { 
+        Id = "A31E6EE6-BC5E-4BAC-8DCA-BDC5F1E7529D"
+        Title = "Nulla maximus porttitor"
+        Description = "LPhasellus fermentum sem mattis risus egestas, non suscipit eros faucibus."
+        HappeningAt = DateTime.Now.AddDays(-7.0).AddHours(-1.0).AddMinutes(47.0)
+        IsCompleted = false
+        UserId = "A16247C4-E638-405F-8CB9-04DF26F3B3AA"
+    }
     {
         Id = "B4ED9212-C630-40B4-8B34-093FCA298739"
         Title = "Lorem ipsum dolor"

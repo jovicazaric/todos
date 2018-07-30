@@ -14,24 +14,24 @@ type SessionType =
     | LoggedUserSession of LoggedUser
     | NoSession
 
-let session f =
+let session handler =
     statefulForSession >=>
     context (fun ctx ->
         match HttpContext.state ctx with 
             | Some state -> 
                 match (state.get "userId", state.get "userFullName")  with 
-                    | Some(id), Some(fullName) -> f (LoggedUserSession {Id = id; FullName = fullName})
-                    | _ -> f NoSession
-            | None -> f NoSession)
+                    | Some(id), Some(fullName) -> (LoggedUserSession {Id = id; FullName = fullName} |> handler )
+                    | _ -> handler NoSession
+            | None -> handler NoSession)
 
-let sessionStore setterFunction = context (fun ctx ->
+let stateStore handler = context (fun ctx ->
     match HttpContext.state ctx with
-        | Some state -> setterFunction state
+        | Some state -> handler  state
         | None -> never
     )
 
 let sessionBasedActions userLogged userNotLogged =
-    session (fun s -> 
-        match s with    
+    session (fun session -> 
+        match session with    
             | LoggedUserSession _ -> userLogged
             | NoSession -> userNotLogged)
